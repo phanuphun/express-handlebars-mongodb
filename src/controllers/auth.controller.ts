@@ -2,21 +2,43 @@ import { RequestHandler } from "express";
 import UserModel from "../models/user.model";
 import * as argon2 from "argon2";
 import * as jwt from "jsonwebtoken";
+import fs from "fs";
+import appConfig from '../configs/index.config';
 
-const loginUser: RequestHandler = (req, res) => {
+const APP_SECRET = appConfig.app.secret;
+
+const loginUser: RequestHandler = async (req, res) => {
     const { username, password } = req.body;
-    let user = UserModel.findOne({ username });
-    // Handle login logic here
+    console.log(username, password);
+    let user = await UserModel.findOne({ username });
+    if (!user) {
+        return res.status(404).send({
+            ok: false,
+            message: 'User not found'
+        });
+    }
+    const isPasswordValid = await argon2.verify(user.password, password);
+    if (!isPasswordValid) {
+        return res.status(401).send({
+            ok: false,
+            message: 'Invalid password'
+        });
+    }
+    const token = jwt.sign({ userId: user._id }, APP_SECRET, { expiresIn: '3h' });
     return res.status(200).send({
         ok: true,
-        message: 'Login successful'
+        message: 'Login successful',
+        data: {
+            user,
+            token
+        }
     });
 }
 
 const registerUser: RequestHandler = async (req, res) => {
+    const { displayName, username, password } = req.body;
+    const avatarFile = req.file;
     try {
-        const { displayName, username, password } = req.body;
-        const avatarFile = req.file;
         if (!displayName || !username || !password) {
             return res.status(400).send({
                 ok: false,
@@ -29,6 +51,10 @@ const registerUser: RequestHandler = async (req, res) => {
         let user = await UserModel.findOne({ username });
 
         if (user) {
+            if (avatarFile && avatarFile.path && fs.existsSync(avatarFile.path)) {
+                fs.unlinkSync(avatarFile.path);
+                console.log('Deleted uploaded avatar file due to existing user.');
+            }
             return res.status(409).send({
                 ok: false,
                 message: 'User already exists'
@@ -48,6 +74,10 @@ const registerUser: RequestHandler = async (req, res) => {
             data: createUser
         });
     } catch (err: any) {
+        if (avatarFile && avatarFile.path && fs.existsSync(avatarFile.path)) {
+            fs.unlinkSync(avatarFile.path);
+            console.log('Deleted uploaded avatar file due to existing user.');
+        }
         return res.status(500).send({
             ok: false,
             message: 'Internal server error',

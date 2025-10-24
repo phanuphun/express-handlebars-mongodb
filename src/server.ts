@@ -9,15 +9,6 @@ const APP_NAME = appConfig.app.name;
 const APP_DESCRIPTION = appConfig.app.description;
 const VERSION = appConfig.app.version;
 
-
-app.get('/api/v1/health', (req, res) => {
-    res.send({
-        name: APP_NAME,
-        version: VERSION,
-        message: APP_DESCRIPTION
-    });
-});
-
 app.listen(PORT, HOST, async () => {
     console.log(`Application Name: ${APP_NAME}`);
     console.log(`Description: ${APP_DESCRIPTION}`);

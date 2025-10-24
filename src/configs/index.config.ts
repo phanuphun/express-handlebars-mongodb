@@ -8,6 +8,7 @@ const appConfig = {
         version: process.env.VERSION || '1.0.0-development',
         prefix: process.env.PREFIX || '/api',
         description: process.env.DESCRIPTION || 'A simple chat room application',
+        secret: process.env.APP_SECRET || 'supersecretkey'
     },
     database: {
         mongoDb: {
