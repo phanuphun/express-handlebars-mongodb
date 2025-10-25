@@ -1,5 +1,7 @@
 node_modules/
 public/*/images/*
+public/css/app.css
+public/css/animate.min.css
 dist/
 .env*
 !.env.example
