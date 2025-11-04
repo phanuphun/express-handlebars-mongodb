@@ -24,7 +24,6 @@ const isDev = process.env.NODE_ENV === 'development';
 const viewsPath = isProd ? path.resolve(__dirname, 'views')
     : path.resolve('src', 'views');
 
-// static: dev เสิร์ฟจาก public/, prod เสิร์ฟจาก dist/public
 const staticPath = isProd ? path.resolve(__dirname, 'public')
     : path.resolve('public');
 
@@ -51,7 +50,6 @@ function createApp(): express.Express {
 
     if (isDev) {
         app.use(helmet({ contentSecurityPolicy: false }));
-        // กัน cache หน้า HTML ใน dev ด้วย
         app.use((req, res, next) => {
             res.set('Cache-Control', 'no-store');
             next();

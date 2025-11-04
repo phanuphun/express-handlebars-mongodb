@@ -17,8 +17,8 @@
             <div class="card-body">
                 <div class="card-action">
                     <div class="w-full flex flex-row gap-2 justify-end">
-                        <button class="btn btn-sm btn-outline" data-note-id="{{_id}}" data-title="{{title}}"
-                            data-content="{{content}}" data-bgcolor="{{bgColor}}" onclick="openEditModal(this)">
+                        <button class="btn btn-sm btn-outline" data-edit-note data-note-id="{{_id}}"
+                            data-title="{{title}}" data-content="{{content}}" data-bgcolor="{{bgColor}}">
                             Edit
                         </button>
                         <form method="POST" action="/notes/{{_id}}?_method=DELETE"

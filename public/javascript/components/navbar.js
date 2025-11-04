@@ -5,6 +5,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const userMntBtn = document.getElementById('user-mnt');
     const roomMntBtn = document.getElementById('room-mnt');
     const accountBtn = document.getElementById('btn-account');
+    const addBtn = document.getElementById('btn-add-note');
+    const cancelAddBtn = document.getElementById('btn-cancel-add-note');
+
+    addBtn?.addEventListener('click', () => {
+        const id = addBtn.getAttribute('data-modal') || 'add_note_modal';
+        window.openModal?.(id);
+    });
+
+    cancelAddBtn?.addEventListener('click', () => {
+        const id = cancelAddBtn.getAttribute('data-modal-close') || 'add_note_modal';
+        window.closeModal?.(id);
+    });
 
     const loggedIn = window.isLoggedIn();
     if (loggedIn) {
